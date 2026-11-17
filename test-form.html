@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Тестовая форма — WOW CRM</title>
+  <style>
+    body { font-family: system-ui, sans-serif; background: #f6f7f9; display: flex; justify-content: center; padding: 40px 16px; }
+    .box { background: #fff; border: 1px solid #e4e7ec; border-radius: 12px; padding: 24px; width: 420px; }
+    label { display: block; font-size: 12px; color: #667085; margin-bottom: 10px; }
+    input { display: block; width: 100%; box-sizing: border-box; padding: 8px 10px; border: 1px solid #e4e7ec; border-radius: 8px; margin-top: 4px; font: inherit; }
+    button { background: #4f46e5; color: #fff; border: 0; border-radius: 8px; padding: 9px 16px; font: inherit; cursor: pointer; }
+    pre { background: #0f172a; color: #e2e8f0; padding: 12px; border-radius: 8px; font-size: 12px; white-space: pre-wrap; word-break: break-all; }
+    .muted { color: #667085; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Тестовая заявка</h2>
+    <p class="muted">Имитирует сайт: страница открыта как будто по клику из рекламы Meta (fbclid, UTM и ID объявления в адресе).</p>
+    <form data-wow-crm="only" data-wow-event="Lead" data-wow-form="Тестовая форма">
+      <label>Имя<input name="name" value="Тест Тестов"></label>
+      <label>Телефон<input name="phone" value="0501112233"></label>
+      <label>Email<input name="email" type="email" value="test@example.com"></label>
+      <label>Категория<input name="category" value="консультация"></label>
+      <input name="wow_hp" style="display:none" tabindex="-1" autocomplete="off">
+      <button>Отправить заявку</button>
+    </form>
+    <h4>Ответ CRM</h4>
+    <pre id="out">—</pre>
+    <h4>Что сохранено в cookie</h4>
+    <pre id="attr">—</pre>
+  </div>
+  <script>
+    var p = new URLSearchParams(location.search);
+    window.WOW_CRM = { endpoint: p.get("endpoint"), siteKey: p.get("key"), currency: p.get("cur") || "USD" };
+    document.addEventListener("wow-crm:success", function (e) { document.getElementById("out").textContent = JSON.stringify(e.detail, null, 2); });
+    document.addEventListener("wow-crm:error", function (e) { document.getElementById("out").textContent = "Ошибка: " + e.detail; });
+  </script>
+  <script src="wow-track.js"></script>
+  <script>
+    if (window.wowCrm) document.getElementById("attr").textContent =
+      JSON.stringify({ external_id: wowCrm.externalId, attribution: wowCrm.attribution,
+        _fbc: (document.cookie.match(/_fbc=([^;]*)/) || [])[1], _fbp: (document.cookie.match(/_fbp=([^;]*)/) || [])[1] }, null, 2);
+  </script>
+</body>
+</html>
